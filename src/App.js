@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import api from './axios'
+
 import './App.css';
 
+// import CandidateList from './components/CandidateList';
+
 function App() {
+
+  const [candidates, setCandidates] = useState([])
+
+  useEffect(() => {
+      api.get('/hiring').then(({data}) => {
+        setCandidates(data.data.candidates.map((candidate, i) => {
+          const jobs = candidate.history.map((title, j) => 
+            <li>{title}</li>
+          )
+          return <ul>
+            <li>{candidate.name}</li>
+            <ul>
+              {jobs}
+            </ul>
+          </ul>
+        }));
+      })
+  }, []);
+
+  if (!candidates) return null;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     {/* <CandidateList candidates={candidates}/> */}
+     {candidates}
     </div>
   );
 }
