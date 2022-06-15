@@ -3,34 +3,35 @@ import api from './axios'
 
 import './App.css';
 
-// import CandidateList from './components/CandidateList';
-
 function App() {
 
   const [candidates, setCandidates] = useState([])
-
   useEffect(() => {
       api.get('/hiring').then(({data}) => {
-        setCandidates(data.data.candidates.map((candidate, i) => {
-          const jobs = candidate.history.map((title, j) => 
-            <li>{title}</li>
-          )
-          return <ul>
-            <li>{candidate.name}</li>
-            <ul>
-              {jobs}
-            </ul>
-          </ul>
-        }));
+        setCandidates(data.data.candidates)
       })
   }, []);
+
+  const CandidateList = candidates.map((candidate, i) => {
+    const jobs = candidate.history.map((title) => 
+      <li>{ title }</li>
+    )
+    return (
+      <ul>
+        <li key={i}>{ candidate.name }</li>
+        <ul>
+          { jobs }
+        </ul>
+      </ul>
+    )
+  });
+
 
   if (!candidates) return null;
 
   return (
     <div className="App">
-     {/* <CandidateList candidates={candidates}/> */}
-     {candidates}
+     { CandidateList }
     </div>
   );
 }
